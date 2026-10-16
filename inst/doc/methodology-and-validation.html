@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Ashutosh Sawarkar" />
+
+<meta name="date" content="2026-10-01" />
+
+<title>BreedReliabR: Methodology and empirical validation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">BreedReliabR: Methodology and empirical
+validation</h1>
+<h4 class="author">Ashutosh Sawarkar</h4>
+<h4 class="date">2026-10-01</h4>
+
+
+
+<p>This vignette describes an offline, model-agnostic workflow. The
+included code uses the package’s simulated maize example; it does not
+reproduce or refit the G2F analyses. The external model fit, coefficient
+means, and complete prediction-error covariance must be supplied by the
+user’s validated workflow.</p>
+<div id="workflow" class="section level2">
+<h2>Workflow</h2>
+<pre class="text"><code>external model fitting
+  -&gt; coefficient means + full PEV
+  -&gt; br_prediction()
+  -&gt; br_tpe()
+  -&gt; br_support()
+  -&gt; br_omega()
+  -&gt; br_compare() / br_advance()
+  -&gt; br_curve()
+  -&gt; external validation against independent outcomes</code></pre>
+<p>The candidate-major coefficient order is fixed as candidate 1’s basis
+terms, then candidate 2’s terms, and so on. The prediction covariance
+must retain cross-candidate and cross-coefficient terms.
+<code>br_prediction()</code> checks dimension, symmetry, and
+positive-semidefinite behavior, but it cannot verify the upstream
+model’s biological or statistical validity.</p>
+</div>
+<div id="import-the-model-outputs-and-specify-a-tpe" class="section level2">
+<h2>Import the model outputs and specify a TPE</h2>
+<p>The simulated example has a compact pre-specified prediction object
+and five hypothetical TPE states. For a real analysis, replace these
+objects with coefficients and a full PEV from the external fit, without
+changing the package input order.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(BreedReliabR)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">data</span>(maize_demo)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> <span class="fu">do.call</span>(br_prediction, maize_demo<span class="sc">$</span>prediction_inputs)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>tpe <span class="ot">&lt;-</span> <span class="fu">br_tpe</span>(maize_demo<span class="sc">$</span>tpe_basis,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>              <span class="at">weights =</span> maize_demo<span class="sc">$</span>tpe_states<span class="sc">$</span>weight,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>              <span class="at">state_id =</span> maize_demo<span class="sc">$</span>tpe_states<span class="sc">$</span>state_id)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>prediction</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; BreedReliabR prediction object</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; Candidates: 8 </span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; Environmental basis terms: 3 </span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; Source: Simulated fit-import inputs; not estimated from training phenotypes</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>tpe</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; BreedReliabR target population of environments</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; States: 5 </span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; Basis terms: 3 </span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; Weight sum: 1</span></span></code></pre></div>
+<p>Weights define an assumed target distribution. Equal weights are
+useful when they match the target question, but they are not
+automatically production-area weights.</p>
+</div>
+<div id="check-environmental-support-and-uncertainty-scale" class="section level2">
+<h2>Check environmental support and uncertainty scale</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>support <span class="ot">&lt;-</span> <span class="fu">br_support</span>(tpe, maize_demo<span class="sc">$</span>training_basis)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>support<span class="sc">$</span>summary</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt;   weight_outside_range weight_constant_mismatch weight_beyond_training_max_nn</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; 1                 0.05                        0                          0.05</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;   training_median_nn training_max_nn</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; 1          0.7204005       0.7204005</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>omega <span class="ot">&lt;-</span> <span class="fu">br_omega</span>(prediction, tpe, <span class="at">H =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">21</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>omega<span class="sc">$</span>summary</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;    H median_omega median_pred_var median_env_var</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 1  1   10.3342773      0.08679504     0.89696401</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 2  3    3.4447591      0.08679504     0.29898800</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; 3  5    2.0668555      0.08679504     0.17939280</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; 4 10    1.0334277      0.08679504     0.08969640</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 5 21    0.4921084      0.08679504     0.04271257</span></span></code></pre></div>
+<p>Support is geometric: ranges and nearest-neighbour distances can flag
+extrapolative states, but cannot establish biological validity or
+calibration. Omega(H) compares finite-TPE environmental variance with
+prediction variance. It is a relative diagnostic, not a probability or a
+universal threshold.</p>
+</div>
+<div id="compare-m0m3-and-calculate-advancement-probabilities" class="section level2">
+<h2>Compare M0–M3 and calculate advancement probabilities</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">br_compare</span>(prediction, tpe, <span class="at">H =</span> <span class="dv">5</span>, <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>                         <span class="at">nsim =</span> <span class="dv">2000</span>, <span class="at">seed =</span> <span class="dv">410</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>comparison<span class="sc">$</span>summary</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;   method H k nsim expected_merit_set_reliability probability_set_reliability</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 1     M0 5 3    1                             NA                          NA</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 2     M1 5 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 3     M2 5 3 2000                      0.8573333                   0.8573333</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 4     M3 5 3 2000                      0.6473333                   0.6473333</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;   probability_sum invariant_error</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; 1               3               0</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; 2               3               0</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 3               3               0</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 4               3               0</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="fu">head</span>(comparison<span class="sc">$</span>candidates)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt;   method H candidate expected_merit p_advance mcse in_expected_merit_set</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 1     M0 5      MZ02         8.8450         1    0                  TRUE</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 2     M0 5      MZ01         8.8115         1    0                  TRUE</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; 3     M0 5      MZ03         8.8005         1    0                  TRUE</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 4     M0 5      MZ05         8.6040         0    0                 FALSE</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 5     M0 5      MZ04         8.5085         0    0                 FALSE</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; 6     M0 5      MZ07         8.4520         0    0                 FALSE</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt;   in_probability_set</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; 1               TRUE</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt; 2               TRUE</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; 3               TRUE</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; 4              FALSE</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; 5              FALSE</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; 6              FALSE</span></span></code></pre></div>
+<p>M0 is deterministic point ranking and does not estimate reliability.
+M1 propagates prediction uncertainty, M2 propagates finite-TPE
+uncertainty while holding coefficients fixed, and M3 propagates both.
+The results are conditional on the supplied predictive distribution,
+TPE, H, and fixed-k rule.</p>
+<p>For a selected set, reliability is the expected retained fraction
+<code>k^-1 * sum(p_i^A)</code>; it is not the probability of exact-set
+recovery. The candidate-level Monte Carlo standard error describes
+simulation error only. The probability-selected set is selected and
+evaluated using the same draws, so its reliability estimate can be
+optimistic at finite simulation size.</p>
+</div>
+<div id="interpret-the-h-curve" class="section level2">
+<h2>Interpret the H curve</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>curve <span class="ot">&lt;-</span> <span class="fu">br_curve</span>(prediction, tpe, <span class="at">H =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>), <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                 <span class="at">nsim =</span> <span class="dv">2000</span>, <span class="at">seed =</span> <span class="dv">410</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>curve<span class="sc">$</span>summary</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;    method  H k nsim expected_merit_set_reliability probability_set_reliability</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 1      M0  1 3    1                             NA                          NA</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 2      M1  1 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 3      M2  1 3 2000                      0.7106667                   0.7106667</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 4      M3  1 3 2000                      0.5945000                   0.5945000</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 5      M0  3 3    1                             NA                          NA</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 6      M1  3 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 7      M2  3 3 2000                      0.8041667                   0.8041667</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; 8      M3  3 3 2000                      0.6383333                   0.6383333</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; 9      M0  5 3    1                             NA                          NA</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 10     M1  5 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 11     M2  5 3 2000                      0.8573333                   0.8573333</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; 12     M3  5 3 2000                      0.6473333                   0.6473333</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; 13     M0 10 3    1                             NA                          NA</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 14     M1 10 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; 15     M2 10 3 2000                      0.9161667                   0.9161667</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; 16     M3 10 3 2000                      0.6561667                   0.6561667</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt;    probability_sum invariant_error</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; 1                3               0</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; 2                3               0</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; 3                3               0</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; 4                3               0</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; 5                3               0</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; 6                3               0</span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt; 7                3               0</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt; 8                3               0</span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; 9                3               0</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt; 10               3               0</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; 11               3               0</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; 12               3               0</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; 13               3               0</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; 14               3               0</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; 15               3               0</span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt; 16               3               0</span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="fu">plot</span>(curve, <span class="at">type =</span> <span class="st">&quot;reliability&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">plot</span>(curve, <span class="at">type =</span> <span class="st">&quot;omega&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>H is the number of future independent TPE draws under the reference
+formulation. <code>br_curve()</code> computes each requested H
+separately and does not impose monotonicity on estimated
+reliability.</p>
+</div>
+<div id="external-validation-and-empirical-findings" class="section level2">
+<h2>External validation and empirical findings</h2>
+<p>For external validation, freeze the upstream fit, TPE, predictions,
+probabilities, and selected sets before inspecting outcomes. Construct
+an independent phenotype reference, then score candidate-level events
+with a candidate-level prevalence baseline. Keep uncertainty in the
+external ranking separate from Monte Carlo error in predicted
+probabilities.</p>
+<p>The project’s prediction-frozen 2024 validation and forward
+year-held-out 2022 analysis found poor absolute calibration; M2 had the
+worst Brier performance; M3’s Brier loss was slightly below M1’s in both
+settings; and predicted selected-set reliability was substantially
+overoptimistic. All probability methods performed worse than
+prevalence-only forecasts, including after the corrected Stage L3a
+candidate-level denominator audit. Performance alignment was stronger
+descriptively for candidates with historical phenotype records, without
+supporting a causal interpretation. The 2022 analysis uses a later
+authoritative G2F release for a year-held-out analysis; it is not an
+exact reconstruction of the separate official 2022 competition test
+design.</p>
+<p>These empirical results are not a claim of general calibration.
+Correctly propagating the specified uncertainties does not repair an
+inadequate upstream predictive distribution or establish improved
+genetic gain. Full provenance, scripts, and the preserved
+pre-correction/corrected L3a audit trail are kept in the separate
+reproducibility archive; raw G2F data are not included here.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

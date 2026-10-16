@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>From imported predictions to advancement reliability: simulated maize</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">From imported predictions to advancement
+reliability: simulated maize</h1>
+
+
+
+<div id="decision-and-scope" class="section level2">
+<h2>Decision and scope</h2>
+<p>A hypothetical maize programme must advance three of eight
+unphenotyped candidates for grain yield (t/ha). Every value here is
+<strong>simulated</strong>. The 12 training environments and replicated
+training phenotypes illustrate a separate training population; candidate
+predictions and their covariance are stipulated inputs, not a model fit
+to those phenotypes. They cannot demonstrate predictive accuracy or
+calibration. The data generation script is supplied in
+<code>inst/scripts/maize_demo.R</code> in the source and is installed as
+<code>system.file(&quot;scripts&quot;, &quot;maize_demo.R&quot;, package = &quot;BreedReliabR&quot;)</code>.</p>
+<p>Water deficit is a dimensionless fraction during flowering, and heat
+is the number of hot days during flowering in this hypothetical
+scenario. These descriptors and linear yield responses are illustrative
+simplifications, not validated crop models.</p>
+</div>
+<div id="fit-import-boundary" class="section level2">
+<h2>1. Fit-import boundary</h2>
+<p>In a real application, fit and validate a prediction model
+externally, then export coefficient means and the <strong>full joint
+prediction-error covariance</strong>, including between-candidate
+dependence, using the same environmental basis. Do not substitute
+residual variance, omit cross-candidate covariance without
+justification, or mix coefficient orders. No genomic model is fitted by
+this package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">data</span>(maize_demo)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>d <span class="ot">&lt;-</span> maize_demo</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">head</span>(d<span class="sc">$</span>training_environments)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt;   environment flowering_water_deficit hot_days_flowering</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; 1        TR01                    0.10                  2</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; 2        TR02                    0.15                  5</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; 3        TR03                    0.20                  1</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; 4        TR04                    0.25                  7</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; 5        TR05                    0.30                  3</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; 6        TR06                    0.35                  9</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">head</span>(d<span class="sc">$</span>training_phenotypes)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt;   genotype environment replicate yield_t_ha</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; 1     TG01        TR01         1  10.618130</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; 2     TG02        TR01         1  10.668364</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; 3     TG03        TR01         1   9.507768</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; 4     TG04        TR01         1  11.365346</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 5     TG05        TR01         1  10.439424</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; 6     TG06        TR01         1   9.860005</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>d<span class="sc">$</span>candidates</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co">#&gt;   candidate phenotyped</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co">#&gt; 1      MZ01      FALSE</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co">#&gt; 2      MZ02      FALSE</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="co">#&gt; 3      MZ03      FALSE</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="co">#&gt; 4      MZ04      FALSE</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt; 5      MZ05      FALSE</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a><span class="co">#&gt; 6      MZ06      FALSE</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a><span class="co">#&gt; 7      MZ07      FALSE</span></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a><span class="co">#&gt; 8      MZ08      FALSE</span></span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">do.call</span>(br_prediction, d<span class="sc">$</span>prediction_inputs)</span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>pred</span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a><span class="co">#&gt; BreedReliabR prediction object</span></span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a><span class="co">#&gt; Candidates: 8 </span></span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a><span class="co">#&gt; Environmental basis terms: 3 </span></span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a><span class="co">#&gt; Source: Simulated fit-import inputs; not estimated from training phenotypes</span></span></code></pre></div>
+<p>Rows of <code>coef_mean</code> follow candidate IDs. Covariance rows
+and columns follow all three coefficients of candidate 1, then all
+coefficients of candidate 2, and so on. The basis is intercept,
+<code>(water_deficit - 0.35)/0.20</code>, and
+<code>(hot_days - 7)/5</code>. Apply these exact transformations to
+training and target environments; never standardize them separately. The
+uncertainty distribution is Gaussian and is assumed independent of
+future environment sampling.</p>
+</div>
+<div id="specify-the-tpe" class="section level2">
+<h2>2. Specify the TPE</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>d<span class="sc">$</span>tpe_states</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt;   state_id flowering_water_deficit hot_days_flowering weight</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; 1 cool_wet                    0.15                  2   0.15</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; 2  typical                    0.35                  7   0.40</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; 3      dry                    0.55                  9   0.25</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; 4  hot_dry                    0.60                 14   0.15</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; 5  extreme                    0.80                 20   0.05</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>tpe <span class="ot">&lt;-</span> <span class="fu">br_tpe</span>(d<span class="sc">$</span>tpe_basis, <span class="at">weights =</span> d<span class="sc">$</span>tpe_states<span class="sc">$</span>weight,</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>              <span class="at">state_id =</span> d<span class="sc">$</span>tpe_states<span class="sc">$</span>state_id)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>tpe</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; BreedReliabR target population of environments</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; States: 5 </span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; Basis terms: 3 </span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; Weight sum: 1</span></span></code></pre></div>
+<p>These fixed weights describe a hypothetical deployment mixture, with
+5% mass on an extreme hot-dry state. They are assumptions, not estimates
+of biological truth. Future environments are sampled independently with
+replacement. H is the number of such future draws, not the number of
+training trials or an effective sample size for a correlated network.
+Dependence among locations/years requires a different sampling model and
+is outside this demonstration.</p>
+</div>
+<div id="diagnose-support-before-interpreting-reliability" class="section level2">
+<h2>3. Diagnose support before interpreting reliability</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>support <span class="ot">&lt;-</span> <span class="fu">br_support</span>(tpe, d<span class="sc">$</span>training_basis)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>support</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; BreedReliabR environmental support diagnostics</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;  weight_outside_range weight_constant_mismatch weight_beyond_training_max_nn</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;                  0.05                        0                          0.05</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;  training_median_nn training_max_nn</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;           0.7204005       0.7204005</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Geometric support only; these diagnostics do not establish biological correctness of the specified TPE or prediction calibration.</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>support<span class="sc">$</span>states</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;          state_id weight outside_range n_outside constant_mismatch</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; cool_wet cool_wet   0.15         FALSE         0             FALSE</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; typical   typical   0.40         FALSE         0             FALSE</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; dry           dry   0.25         FALSE         0             FALSE</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; hot_dry   hot_dry   0.15         FALSE         0             FALSE</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; extreme   extreme   0.05          TRUE         2             FALSE</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;          nearest_distance beyond_training_max_nn</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; cool_wet        0.2773501                  FALSE</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; typical         0.4596570                  FALSE</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; dry             0.2773501                  FALSE</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; hot_dry         0.3602002                  FALSE</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; extreme         1.4187445                   TRUE</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>support<span class="sc">$</span>ranges</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt;        term   min max        sd constant</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 1 intercept  1.00 1.0 0.0000000     TRUE</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; 2     water -1.25 1.5 0.9013878    FALSE</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 3      heat -1.20 1.6 0.8702142    FALSE</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="fu">plot</span>(support)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>The extreme state exceeds the training ranges. Distances use training
+sample standard deviations in nonconstant basis columns; the intercept
+contributes nothing. A change in a constant training column instead has
+infinite distance. The dashed line is the largest leave-one-out
+nearest-neighbour training distance, an empirical reference, not a
+calibrated cutoff. Correlated/redundant descriptors can distort
+Euclidean distances. Being inside each marginal range does not imply
+being inside the joint training support, and proximity does not
+establish model validity. Zero-weight states are still diagnosed but
+contribute no weighted mass.</p>
+</div>
+<div id="partition-uncertainty-with-omega" class="section level2">
+<h2>4. Partition uncertainty with Omega</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>om <span class="ot">&lt;-</span> <span class="fu">br_omega</span>(pred, tpe, <span class="at">H =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>om</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; BreedReliabR uncertainty diagnostic</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;   H median_omega median_pred_var median_env_var</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;   1   10.3342773      0.08679504      0.8969640</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;   3    3.4447591      0.08679504      0.2989880</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;   5    2.0668555      0.08679504      0.1793928</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  10    1.0334277      0.08679504      0.0896964</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  20    0.5167139      0.08679504      0.0448482</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">head</span>(om<span class="sc">$</span>candidate)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;   candidate  H expected_merit   pred_var   env_var     omega</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; 1      MZ01  1         8.8115 0.08679504 2.6023033 29.982166</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; 2      MZ01  3         8.8115 0.08679504 0.8674344  9.994055</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; 3      MZ01  5         8.8115 0.08679504 0.5204607  5.996433</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; 4      MZ01 10         8.8115 0.08679504 0.2602303  2.998217</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; 5      MZ01 20         8.8115 0.08679504 0.1301152  1.499108</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; 6      MZ02  1         8.8450 0.08679504 1.4280468 16.453092</span></span></code></pre></div>
+<p>Omega is the candidate-specific ratio of finite-environment variance
+to prediction variance. Its numerator includes the
+prediction-by-environment interaction in the core variance
+decomposition. With fixed inputs it decreases as 1/H. It is not a
+probability or a universal decision threshold. Absolute candidate
+variances do not alone determine ranking reliability, which also depends
+on merit gaps and joint covariance. Zero prediction variance can produce
+infinite Omega; both variance components zero give Omega zero by
+convention.</p>
+</div>
+<div id="compare-all-four-uncertainty-scenarios" class="section level2">
+<h2>5. Compare all four uncertainty scenarios</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">br_compare</span>(pred, tpe, <span class="at">H =</span> <span class="dv">5</span>, <span class="at">k =</span> <span class="dv">3</span>, <span class="at">nsim =</span> <span class="dv">2000</span>, <span class="at">seed =</span> <span class="dv">410</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">summary</span>(comparison)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;   method H k nsim expected_merit_set_reliability probability_set_reliability</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; 1     M0 5 3    1                             NA                          NA</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 2     M1 5 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 3     M2 5 3 2000                      0.8573333                   0.8573333</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 4     M3 5 3 2000                      0.6473333                   0.6473333</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;   probability_sum invariant_error</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 1               3               0</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 2               3               0</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 3               3               0</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; 4               3               0</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">plot</span>(comparison)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>M0 ranks expected merit; M1 varies predictions at the mean TPE basis;
+M2 varies future environments with fixed coefficient means; M3 varies
+both. They use the same inputs and selection size. Seeded calls are
+reproducible, but reusing a seed does not provide a paired estimator for
+differences among methods. M0 reports NA set reliability because it does
+not estimate uncertainty.</p>
+</div>
+<div id="inspect-advancement-probabilities-and-selected-sets" class="section level2">
+<h2>6. Inspect advancement probabilities and selected sets</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>joint <span class="ot">&lt;-</span> comparison<span class="sc">$</span>analyses<span class="sc">$</span>M3</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>joint<span class="sc">$</span>candidates</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;   candidate expected_merit p_advance        mcse in_expected_merit_set</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; 1      MZ02         8.8450    0.6805 0.010426403                  TRUE</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 2      MZ01         8.8115    0.6165 0.010872620                  TRUE</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; 3      MZ03         8.8005    0.6450 0.010699883                  TRUE</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 4      MZ05         8.6040    0.3515 0.010675855                 FALSE</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 5      MZ04         8.5085    0.2460 0.009630265                 FALSE</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; 6      MZ07         8.4520    0.2340 0.009466890                 FALSE</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; 7      MZ06         8.4130    0.1570 0.008134833                 FALSE</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; 8      MZ08         8.2275    0.0695 0.005686376                 FALSE</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;   in_probability_set</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; 1               TRUE</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 2               TRUE</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; 3               TRUE</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; 4              FALSE</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; 5              FALSE</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; 6              FALSE</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; 7              FALSE</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; 8              FALSE</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>joint<span class="sc">$</span>expected_merit_set</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MZ02&quot; &quot;MZ01&quot; &quot;MZ03&quot;</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>joint<span class="sc">$</span>probability_set</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; [1] &quot;MZ02&quot; &quot;MZ03&quot; &quot;MZ01&quot;</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">abs</span>(<span class="fu">sum</span>(joint<span class="sc">$</span>candidates<span class="sc">$</span>p_advance) <span class="sc">-</span> <span class="dv">3</span>) <span class="sc">&lt;</span> <span class="fl">1e-10</span>)</span></code></pre></div>
+<p>Each draw advances exactly k candidates, so probabilities sum to k,
+not one. Candidate MCSE is a binomial Monte Carlo standard error, not a
+confidence interval for real-world performance. Zero observed MCSE at an
+estimated probability of zero or one is not proof of certainty. Increase
+nsim and repeat seeds when borderline decisions matter. Ties are
+resolved deterministically by candidate ID.</p>
+<p>Set reliability is the <strong>expected retained fraction</strong>:
+the average advancement probability over the specified k-member set. It
+is not the probability that every member is retained. The
+probability-selected set is chosen using the same draws that estimate
+its reliability, so its reported reliability can be optimistically
+selected at finite nsim. This wrapper does not claim independent
+evaluation or provide a set-level MCSE from marginal candidate
+MCSEs.</p>
+</div>
+<div id="interpret-reliability-versus-h" class="section level2">
+<h2>7. Interpret reliability versus H</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>curve <span class="ot">&lt;-</span> <span class="fu">br_curve</span>(pred, tpe, <span class="at">H =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>), <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                  <span class="at">nsim =</span> <span class="dv">2000</span>, <span class="at">seed =</span> <span class="dv">410</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">summary</span>(curve)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; $reliability</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;    method  H k nsim expected_merit_set_reliability probability_set_reliability</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; 1      M0  1 3    1                             NA                          NA</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 2      M1  1 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; 3      M2  1 3 2000                      0.7106667                   0.7106667</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; 4      M3  1 3 2000                      0.5945000                   0.5945000</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; 5      M0  3 3    1                             NA                          NA</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; 6      M1  3 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; 7      M2  3 3 2000                      0.8041667                   0.8041667</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; 8      M3  3 3 2000                      0.6383333                   0.6383333</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 9      M0  5 3    1                             NA                          NA</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; 10     M1  5 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; 11     M2  5 3 2000                      0.8573333                   0.8573333</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; 12     M3  5 3 2000                      0.6473333                   0.6473333</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; 13     M0 10 3    1                             NA                          NA</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; 14     M1 10 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; 15     M2 10 3 2000                      0.9161667                   0.9161667</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; 16     M3 10 3 2000                      0.6561667                   0.6561667</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; 17     M0 20 3    1                             NA                          NA</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; 18     M1 20 3 2000                      0.6743333                   0.6743333</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; 19     M2 20 3 2000                      0.9490000                   0.9490000</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt; 20     M3 20 3 2000                      0.6681667                   0.6681667</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt;    probability_sum invariant_error</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; 1                3               0</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; 2                3               0</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a><span class="co">#&gt; 3                3               0</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt; 4                3               0</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt; 5                3               0</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a><span class="co">#&gt; 6                3               0</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a><span class="co">#&gt; 7                3               0</span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="co">#&gt; 8                3               0</span></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a><span class="co">#&gt; 9                3               0</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a><span class="co">#&gt; 10               3               0</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a><span class="co">#&gt; 11               3               0</span></span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co">#&gt; 12               3               0</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a><span class="co">#&gt; 13               3               0</span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a><span class="co">#&gt; 14               3               0</span></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a><span class="co">#&gt; 15               3               0</span></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a><span class="co">#&gt; 16               3               0</span></span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a><span class="co">#&gt; 17               3               0</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a><span class="co">#&gt; 18               3               0</span></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a><span class="co">#&gt; 19               3               0</span></span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a><span class="co">#&gt; 20               3               0</span></span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-48"><a href="#cb7-48" tabindex="-1"></a><span class="co">#&gt; $omega</span></span>
+<span id="cb7-49"><a href="#cb7-49" tabindex="-1"></a><span class="co">#&gt;    H median_omega median_pred_var median_env_var</span></span>
+<span id="cb7-50"><a href="#cb7-50" tabindex="-1"></a><span class="co">#&gt; 1  1   10.3342773      0.08679504      0.8969640</span></span>
+<span id="cb7-51"><a href="#cb7-51" tabindex="-1"></a><span class="co">#&gt; 2  3    3.4447591      0.08679504      0.2989880</span></span>
+<span id="cb7-52"><a href="#cb7-52" tabindex="-1"></a><span class="co">#&gt; 3  5    2.0668555      0.08679504      0.1793928</span></span>
+<span id="cb7-53"><a href="#cb7-53" tabindex="-1"></a><span class="co">#&gt; 4 10    1.0334277      0.08679504      0.0896964</span></span>
+<span id="cb7-54"><a href="#cb7-54" tabindex="-1"></a><span class="co">#&gt; 5 20    0.5167139      0.08679504      0.0448482</span></span>
+<span id="cb7-55"><a href="#cb7-55" tabindex="-1"></a><span class="fu">plot</span>(curve)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">plot</span>(curve, <span class="at">type =</span> <span class="st">&quot;omega&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>M1 is unchanged by H for a fixed seed. As H increases, environmental
+sampling variance decreases; M3 approaches the prediction-only scenario
+in the limit, but neither estimated nor exact ranking reliability must
+increase monotonically in every configuration. Curves are computed at
+the requested H values without smoothing or choosing a supposedly
+adequate H. M0 and M1 still appear in the returned tables. Results at
+different H values reuse the seed and are not independent; no
+significance test for differences is supplied.</p>
+</div>
+<div id="tpe-sensitivity-and-research-use" class="section level2">
+<h2>8. TPE sensitivity and research use</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># A transparent alternative scenario, not an automatic correction of the TPE.</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>w <span class="ot">&lt;-</span> d<span class="sc">$</span>tpe_states<span class="sc">$</span>weight</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>w[d<span class="sc">$</span>tpe_states<span class="sc">$</span>state_id <span class="sc">==</span> <span class="st">&quot;extreme&quot;</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>tpe_alternative <span class="ot">&lt;-</span> <span class="fu">br_tpe</span>(d<span class="sc">$</span>tpe_basis, w, d<span class="sc">$</span>tpe_states<span class="sc">$</span>state_id)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="fu">br_support</span>(tpe_alternative, d<span class="sc">$</span>training_basis)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; BreedReliabR environmental support diagnostics</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt;  weight_outside_range weight_constant_mismatch weight_beyond_training_max_nn</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt;                     0                        0                             0</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;  training_median_nn training_max_nn</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt;           0.7204005       0.7204005</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; Geometric support only; these diagnostics do not establish biological correctness of the specified TPE or prediction calibration.</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">br_compare</span>(pred, tpe_alternative, <span class="at">H =</span> <span class="dv">5</span>, <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>                   <span class="at">nsim =</span> <span class="dv">2000</span>, <span class="at">seed =</span> <span class="dv">410</span>))</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt;   method H k nsim expected_merit_set_reliability probability_set_reliability</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 1     M0 5 3    1                             NA                          NA</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; 2     M1 5 3 2000                      0.7113333                   0.7113333</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 3     M2 5 3 2000                      0.9220000                   0.9220000</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 4     M3 5 3 2000                      0.6840000                   0.6840000</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt;   probability_sum invariant_error</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 1               3               0</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 2               3               0</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 3               3               0</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 4               3               0</span></span></code></pre></div>
+<p>Removing an unsupported state changes the scientific question; it is
+justified only by deployment evidence, not by a desire to improve
+apparent reliability. For a publication with real data, document data
+provenance and environmental descriptors, validate the upstream
+predictions out of sample, audit covariance ordering and calibration,
+justify TPE weights, examine alternative plausible mixtures, assess
+Monte Carlo stability, and compare predicted decisions against
+independent outcomes. Passing software checks and this simulated
+workflow do not establish empirical breeding utility or publication
+readiness of those claims.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
