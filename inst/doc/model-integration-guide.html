@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Using BreedReliabR with different prediction models</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using BreedReliabR with different
+prediction models</h1>
+
+
+
+<div id="purpose" class="section level2">
+<h2>Purpose</h2>
+<p>BreedReliabR is a downstream decision-reliability framework rather
+than an upstream genomic prediction model.</p>
+<p>Different prediction models can therefore feed BreedReliabR, but
+compatibility does not depend simply on the name of the statistical
+method or software package. The central requirement is that the upstream
+analysis can provide candidate merit in a common finite environmental
+basis together with the <strong>full joint uncertainty covariance of
+those candidate coefficient targets</strong>.</p>
+<p>This vignette explains how to determine whether an upstream model
+satisfies that requirement.</p>
+</div>
+<div id="the-common-breedreliabr-interface" class="section level2">
+<h2>1. The common BreedReliabR interface</h2>
+<p>Suppose there are <span class="math inline">\(n\)</span> advancement
+candidates and candidate merit is represented by <span class="math inline">\(p\)</span> coefficients. For candidate <span class="math inline">\(i\)</span>,</p>
+<p><span class="math display">\[
+\boldsymbol\beta_i =
+\begin{bmatrix}
+\beta_{i1}\\
+\beta_{i2}\\
+\vdots\\
+\beta_{ip}
+\end{bmatrix}.
+\]</span></p>
+<p>Expected merit in environmental state <span class="math inline">\(x\)</span> is</p>
+<p><span class="math display">\[
+m_i(x) = \boldsymbol\beta_i&#39;x.
+\]</span></p>
+<p>The upstream analysis must therefore deliver</p>
+<pre class="text"><code>coef_mean
+n candidates x p coefficients</code></pre>
+<p>and</p>
+<pre class="text"><code>coef_vcov
+np x np</code></pre>
+<p>where <code>coef_vcov</code> describes the full joint uncertainty of
+the stacked candidate coefficient targets.</p>
+<p>The environmental states forming the target population of
+environments must use the same <span class="math inline">\(p\)</span>-dimensional basis. Examples include an
+intercept with standardised environmental covariates,
+principal-component coordinates, polynomial or spline basis functions,
+or discrete environment-state indicators.</p>
+</div>
+<div id="what-does-coef_vcov-mean" class="section level2">
+<h2>2. What does <code>coef_vcov</code> mean?</h2>
+<p>The interpretation of the covariance supplied to BreedReliabR depends
+on the upstream inferential framework.</p>
+<p>For a frequentist mixed model, it may be the prediction-error
+covariance</p>
+<p><span class="math display">\[
+\operatorname{Var}(t-\widehat t)
+\]</span></p>
+<p>of the candidate coefficient targets.</p>
+<p>For a Bayesian model, the natural quantity is instead the posterior
+covariance</p>
+<p><span class="math display">\[
+\operatorname{Cov}(t\mid y).
+\]</span></p>
+<p>For bootstrap, ensemble, or repeated-fit procedures, it may be an
+empirically estimated joint covariance of candidate coefficient
+predictions across model fits.</p>
+<p>These quantities do not have identical inferential interpretations.
+BreedReliabR treats the supplied matrix as the <strong>working joint
+uncertainty covariance</strong> of the candidate coefficients. The term
+PEV should therefore be reserved for cases where the upstream quantity
+is genuinely a prediction-error variance or covariance.</p>
+</div>
+<div id="what-covariance-should-not-be-supplied" class="section level2">
+<h2>3. What covariance should not be supplied?</h2>
+<p>The covariance should describe uncertainty in the candidate
+coefficient or latent-merit targets represented in
+<code>coef_mean</code>. It should not automatically include ordinary
+residual noise from a future phenotype.</p>
+<p>If</p>
+<p><span class="math display">\[
+Y^* = m_i(x) + \epsilon^*,
+\]</span></p>
+<p>then <span class="math inline">\(\operatorname{Var}(Y^*\mid
+y)\)</span> may include both uncertainty in candidate merit and residual
+variation associated with observing another phenotype. That future
+residual component is not automatically part of the BreedReliabR
+coefficient uncertainty.</p>
+<p>The relevant question is how uncertain the candidate merit
+coefficients are, not how variable another individual phenotype
+measurement could be.</p>
+</div>
+<div id="model-compatibility-and-software-validation-are-different" class="section level2">
+<h2>4. Model compatibility and software validation are different</h2>
+<p>A statistical model can be conceptually compatible even when no
+validated software-specific extraction procedure is available.</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reference</strong></td>
+<td>The hand-off has been constructed explicitly and independently
+checked</td>
+</tr>
+<tr class="even">
+<td><strong>High feasibility</strong></td>
+<td>Required outputs appear available, but software-specific numerical
+equivalence still requires validation</td>
+</tr>
+<tr class="odd">
+<td><strong>Conceptually compatible</strong></td>
+<td>The model can satisfy the mathematical interface, but no validated
+extraction recipe is supplied</td>
+</tr>
+<tr class="even">
+<td><strong>Compatible but limited</strong></td>
+<td>The interface can be formed, but important parts of the BreedReliabR
+framework become degenerate or unavailable</td>
+</tr>
+<tr class="odd">
+<td><strong>Not sufficient as supplied</strong></td>
+<td>Typical output omits information required for the full uncertainty
+representation</td>
+</tr>
+</tbody>
+</table>
+<p>A software package should not be described as a validated
+BreedReliabR integration merely because it fits an appropriate
+model.</p>
+</div>
+<div id="genomic-reaction-norm-models" class="section level2">
+<h2>5. Genomic reaction-norm models</h2>
+<p>A genomic reaction-norm model is a natural upstream partner. For
+example,</p>
+<p><span class="math display">\[
+m_i(e) = \beta_{i0} + \beta_{iH}H_e + \beta_{iW}W_e.
+\]</span></p>
+<p>Each candidate is represented by</p>
+<pre class="text"><code>candidate   intercept   heat_z   water_z</code></pre>
+<p>and the TPE uses the same basis columns. The full candidate
+covariance contains uncertainty among every candidate intercept, heat
+response, and water response.</p>
+<p><strong>Integration status — Reference.</strong> The transparent
+Henderson-equation implementation in the genomic vignette demonstrates
+how candidate coefficient means and their full joint prediction-error
+covariance can be constructed.</p>
+</div>
+<div id="random-regression-models" class="section level2">
+<h2>6. Random-regression models</h2>
+<p>Random regression generalises the same principle. For example,</p>
+<p><span class="math display">\[
+m_i(x) = \beta_{i0} + \beta_{i1}x + \beta_{i2}x^2.
+\]</span></p>
+<p>The BreedReliabR basis is then <code>intercept</code>,
+<code>x</code>, and <code>x_squared</code>. More complex polynomial or
+spline bases are also possible, provided the candidate coefficients and
+TPE use exactly the same frozen basis functions.</p>
+<p><strong>Integration status — Strong conceptual
+compatibility.</strong> The main requirement is the complete joint
+uncertainty covariance of all candidate coefficient targets.</p>
+</div>
+<div id="sommer" class="section level2">
+<h2>7. <code>sommer</code></h2>
+<p><code>sommer</code> is a promising candidate for a future validated
+adapter because its mixed-model prediction machinery can construct
+linear prediction targets from fixed and random model components and can
+expose covariance information for requested targets.</p>
+<p>For a genomic reaction norm, the desired target order would be</p>
+<pre class="text"><code>G001__intercept
+G001__heat_z
+G001__water_z
+G002__intercept
+...</code></pre>
+<p>The resulting prediction vector could form <code>coef_mean</code> and
+the corresponding full target uncertainty matrix could form
+<code>coef_vcov</code>.</p>
+<p>The existence of a covariance output does not itself prove that the
+target definition, covariance interpretation, and ordering match
+BreedReliabR.</p>
+<p><strong>Integration status — High feasibility, native numerical
+validation pending.</strong> The required validation is comparison
+against the transparent genomic reference calculation under the same
+model and variance parameters.</p>
+</div>
+<div id="conventional-gblup" class="section level2">
+<h2>8. Conventional GBLUP</h2>
+<p>A conventional GBLUP may provide one overall genomic breeding value
+for every candidate. This can be represented with <span class="math inline">\(p=1\)</span>.</p>
+<pre class="text"><code>candidate   intercept
+G001        5.31
+G002        5.12
+G003        5.44</code></pre>
+<p>The full uncertainty covariance has dimension <span class="math inline">\(n\times n\)</span>, and every TPE state has the
+same basis value <span class="math inline">\(x=1\)</span>.</p>
+<p>This is mathematically compatible, but the environmental component
+becomes degenerate because all TPE draws are identical in the
+one-dimensional basis. Therefore</p>
+<p><span class="math display">\[
+M2 = M0
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+M3 = M1.
+\]</span></p>
+<p>Finite-TPE environmental variance is zero, and the environmental
+numerator of Omega is consequently zero wherever its
+prediction-uncertainty denominator is positive.</p>
+<p><strong>Integration status — Compatible but TPE-degenerate.</strong>
+Plain GBLUP can propagate prediction uncertainty, but it does not
+represent environment-dependent candidate merit.</p>
+</div>
+<div id="environment-specific-gblup" class="section level2">
+<h2>9. Environment-specific GBLUP</h2>
+<p>Suppose an upstream model predicts candidate genetic merit in three
+predefined environmental states.</p>
+<pre class="text"><code>candidate   State1   State2   State3
+G001        ...      ...      ...
+G002        ...      ...      ...</code></pre>
+<p>These predictions can be represented using a one-hot basis. For three
+states,</p>
+<p><span class="math display">\[
+x_1=(1,0,0),\qquad x_2=(0,1,0),\qquad x_3=(0,0,1).
+\]</span></p>
+<p>Candidate coefficients become their genetic merits in the three
+states. For <span class="math inline">\(n\)</span> candidates and three
+states, the required full covariance is <span class="math inline">\(3n\times3n\)</span>. TPE weights describe the
+assumed probabilities of those states.</p>
+<p>This representation does not automatically generate merit for a
+genuinely new environmental state.</p>
+<p><strong>Integration status — Compatible when the full joint
+candidate-by-state uncertainty covariance is available.</strong></p>
+</div>
+<div id="rr-blup" class="section level2">
+<h2>10. RR-BLUP</h2>
+<p>RR-BLUP can generate candidate genomic predictions from estimated
+marker effects. A simple marker-effect representation may be written
+as</p>
+<p><span class="math display">\[
+g = M_c a.
+\]</span></p>
+<p>If the candidate target depends <strong>only</strong> on those marker
+effects and the complete prediction-error covariance of <span class="math inline">\(a\)</span> is available, then the special-case
+propagation is</p>
+<p><span class="math display">\[
+P_g = M_cP_aM_c&#39;.
+\]</span></p>
+<p>This is not a universal RR-BLUP conversion rule. If the complete
+target also contains uncertain fixed effects or other random terms,
+write the target as</p>
+<p><span class="math display">\[
+t = D\theta
+\]</span></p>
+<p>and propagate the complete coefficient uncertainty as</p>
+<p><span class="math display">\[
+P_t = DP_\theta D&#39;.
+\]</span></p>
+<p>This retains fixed-effect uncertainty and relevant
+cross-covariances.</p>
+<p>Standard RR-BLUP workflows commonly report individual BLUP
+prediction-error variances or standard errors. Those marginal quantities
+do not reconstruct the complete cross-candidate covariance required by
+BreedReliabR.</p>
+<p><strong>Integration status — RR-BLUP model family conceptually
+compatible; standard marginal output not sufficient as supplied for the
+full covariance hand-off.</strong></p>
+</div>
+<div id="bayesian-genomic-models" class="section level2">
+<h2>11. Bayesian genomic models</h2>
+<p>Suppose posterior draws of the upstream parameter vector are</p>
+<p><span class="math display">\[
+\theta^{(1)},\theta^{(2)},\ldots,\theta^{(S)}.
+\]</span></p>
+<p>Transform <strong>each posterior draw</strong> into the desired
+candidate coefficient targets,</p>
+<p><span class="math display">\[
+t^{(s)} = D\theta^{(s)}.
+\]</span></p>
+<p>Only after that transformation should the candidate posterior moments
+be calculated:</p>
+<p><span class="math display">\[
+\widehat\mu_t = \frac{1}{S}\sum_{s=1}^{S} t^{(s)}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\widehat P_t = \operatorname{Cov}\left(t^{(1)},\ldots,t^{(S)}\right).
+\]</span></p>
+<p>These quantities can potentially populate <code>coef_mean</code> and
+<code>coef_vcov</code>. Raw marker-effect covariance should not
+automatically be treated as candidate covariance.</p>
+</div>
+<div id="bglr" class="section level2">
+<h2>12. BGLR</h2>
+<p>BGLR can retain posterior samples of fitted regression effects for
+supported model components. Those samples provide a possible route to
+candidate-level posterior targets.</p>
+<p>For each retained draw, marker effects or other model parameters must
+first be transformed into the complete candidate coefficient target. The
+joint covariance is then estimated across the complete target
+vectors.</p>
+<p>Current BreedReliabR propagates a joint Gaussian coefficient
+distribution. Therefore passing Bayesian posterior means and covariance
+replaces the original posterior with the moment-matched
+approximation</p>
+<p><span class="math display">\[
+t\mid y \approx N(\widehat\mu_t,\widehat P_t).
+\]</span></p>
+<p>This may be reasonable for an approximately Gaussian posterior but
+may be inadequate for strongly skewed, multimodal, or heavy-tailed joint
+posteriors.</p>
+<p><strong>Integration status — Conceptually compatible through
+candidate posterior moments, with a Gaussian approximation unless
+posterior normality is otherwise justified.</strong></p>
+</div>
+<div id="bayesian-reaction-norm-models" class="section level2">
+<h2>13. Bayesian reaction-norm models</h2>
+<p>A Bayesian reaction-norm model is particularly convenient when every
+posterior iteration already contains candidate-specific
+environmental-response coefficients such as intercept, heat response,
+and water response.</p>
+<p>Posterior means of those complete candidate targets can become
+<code>coef_mean</code>; their complete stacked posterior covariance can
+become the working <code>coef_vcov</code>; and the TPE uses the same
+environmental basis.</p>
+<p><strong>Integration status — Strong conceptual compatibility with the
+same Gaussian moment-approximation qualification.</strong></p>
+</div>
+<div id="factor-analytic-gxe-models" class="section level2">
+<h2>14. Factor-analytic GxE models</h2>
+<p>Factor-analytic models require substantially more caution. A
+simplified representation is</p>
+<p><span class="math display">\[
+g_{ie}=\lambda_e&#39;f_i+\delta_{ie},
+\]</span></p>
+<p>where <span class="math inline">\(f_i\)</span> contains genotype
+factor scores, <span class="math inline">\(\lambda_e\)</span> contains
+environment loadings, and <span class="math inline">\(\delta_{ie}\)</span> represents
+environment-specific genetic variation not captured by the common
+factors.</p>
+<p>Using factor scores as candidate coefficients and FA loadings as the
+environmental basis represents only the common component <span class="math inline">\(\lambda_e&#39;f_i\)</span>. It does <strong>not
+generally reproduce complete environment-specific genetic merit</strong>
+because the specific component <span class="math inline">\(\delta_{ie}\)</span> may also matter.</p>
+<p>Genotype factor scores should therefore not automatically be
+advertised as complete BreedReliabR candidate coefficients.</p>
+</div>
+<div id="factor-analytic-models-for-fitted-states" class="section level2">
+<h2>15. Factor-analytic models for fitted states</h2>
+<p>When the decision problem concerns a finite collection of
+environments already represented in the fitted FA model, a safer route
+may be to obtain complete candidate genetic predictions for those states
+and use the discrete state-indicator basis.</p>
+<p>For four fitted states, for example,</p>
+<p><span class="math display">\[
+X_{\mathrm{TPE}}=I_4.
+\]</span></p>
+<p>The complete candidate-by-environment uncertainty covariance is also
+required.</p>
+<p><strong>Integration status — Conditionally compatible for defined
+fitted states.</strong></p>
+</div>
+<div id="factor-analytic-prediction-for-new-environments" class="section level2">
+<h2>16. Factor-analytic prediction for new environments</h2>
+<p>A genuinely new target environment creates two additional challenges.
+Its factor-loading vector is not automatically known, and its
+environment-specific genetic component is not automatically predictable
+from the common-factor structure.</p>
+<p>A validated external model linking observable environmental
+covariates to latent loadings could potentially provide a projection
+rule. Uncertainty in that projection and any omitted
+environment-specific genetic component should also be considered.</p>
+<p><strong>Integration status — Research-level compatibility only. No
+generic FA-to-BreedReliabR adapter is recommended for this
+release.</strong></p>
+</div>
+<div id="asreml-r-and-similar-mixed-model-systems" class="section level2">
+<h2>17. ASReml-R and similar mixed-model systems</h2>
+<p>Mixed-model software such as ASReml-R can fit sophisticated
+random-regression, genomic, and factor-analytic models and can return
+covariance information for requested predictions.</p>
+<p>This makes such systems plausible sources of BreedReliabR inputs, but
+a full prediction covariance should not automatically be treated as the
+required candidate coefficient uncertainty matrix.</p>
+<p>A validated adapter would need to establish that the requested
+predictions correspond exactly to the intended candidate coefficient
+targets, that the covariance has the required uncertainty
+interpretation, that candidate and coefficient ordering is correct, and
+that the extraction reproduces an independent numerical reference.</p>
+<p><strong>Integration status — High feasibility, target extraction
+requires validation.</strong> Proprietary software should not become a
+required dependency of BreedReliabR or its CRAN vignettes.</p>
+</div>
+<div id="principal-component-reaction-norms" class="section level2">
+<h2>18. Principal-component reaction norms</h2>
+<p>Environmental principal components can provide a compact common
+basis. For example,</p>
+<p><span class="math display">\[
+m_i(e)=\beta_{i0}+\beta_{i1}PC1_e+\beta_{i2}PC2_e.
+\]</span></p>
+<p>The candidate coefficient matrix contains intercept, PC1 response,
+and PC2 response coefficients. The TPE contains intercept, PC1, and PC2
+coordinates for every target state.</p>
+<p>The PCA transformation must be fitted using training-environment data
+and then frozen. Target environments must be projected using the same
+transformation. A separate PCA should not be fitted to the TPE.</p>
+<p>The biological interpretation of PC1 or PC2 depends on the loadings
+and should not be assigned automatically. Uncertainty in the estimated
+PCA transformation is ordinarily treated as fixed unless the upstream
+analysis propagates it explicitly.</p>
+<p><strong>Integration status — Strong compatibility.</strong></p>
+</div>
+<div id="polynomial-and-spline-environmental-response-models" class="section level2">
+<h2>19. Polynomial and spline environmental-response models</h2>
+<p>BreedReliabR does not require merit to be linear in the original
+environmental variable. It requires a finite representation that is
+linear in the candidate coefficients.</p>
+<p>For example,</p>
+<p><span class="math display">\[
+m_i(T)=\beta_{i0}+\beta_{i1}T+\beta_{i2}T^2
+\]</span></p>
+<p>uses the basis <span class="math inline">\((1,T,T^2)\)</span>. A
+spline model can similarly use its evaluated spline basis functions.</p>
+<p>The basis definition, knots, and transformations must be frozen from
+the upstream model and applied unchanged to the TPE.</p>
+<p><strong>Integration status — Strong compatibility when full
+coefficient uncertainty is available.</strong></p>
+</div>
+<div id="direct-candidate-by-environment-predictions" class="section level2">
+<h2>20. Direct candidate-by-environment predictions</h2>
+<p>Some models produce a complete table of candidate genetic merit for a
+finite set of target environments without exposing reaction-norm
+coefficients.</p>
+<pre class="text"><code>candidate   Environment1   Environment2   Environment3</code></pre>
+<p>This can be represented through an identity basis. For <span class="math inline">\(m\)</span> environmental states,</p>
+<p><span class="math display">\[
+X_{\mathrm{TPE}}=I_m.
+\]</span></p>
+<p>Candidate coefficients are their genetic merits in those states, and
+the required covariance contains uncertainty among <strong>all
+candidate-by-state targets</strong>.</p>
+<p>This representation does not generate predictions outside the
+supplied states.</p>
+<p><strong>Integration status — Compatible for a finite discrete
+TPE.</strong></p>
+</div>
+<div id="multi-trait-models" class="section level2">
+<h2>21. Multi-trait models</h2>
+<p>Multiple biological traits should not automatically be treated as
+multiple TPE states. Grain yield, protein concentration, and plant
+height are different biological outcomes rather than alternative
+environmental states of one candidate-merit function.</p>
+<p>If several traits are involved in advancement, the upstream analysis
+should first define the decision objective. A validated selection index,
+for example, could transform the traits into one scalar candidate merit
+for each environmental state. BreedReliabR could then propagate
+uncertainty in that scalar decision target.</p>
+<p>Multi-environment or multi-management prediction dimensions are
+different because they may represent the same candidate-merit objective
+under different states.</p>
+<p><strong>Integration status — Multiple unrelated biological traits are
+not directly a TPE representation. An upstream decision index or
+equivalent objective is required.</strong></p>
+</div>
+<div id="machine-learning-prediction-models" class="section level2">
+<h2>22. Machine-learning prediction models</h2>
+<p>Machine-learning point predictions alone are insufficient for the
+full BreedReliabR uncertainty analysis. A compatible uncertainty
+procedure must generate a defensible <strong>joint distribution across
+candidate merit targets</strong>.</p>
+<p>Repeated bootstrap model fits, for example, could produce complete
+candidate prediction vectors for every refit. The covariance across
+those complete vectors may provide a working candidate uncertainty
+covariance while preserving cross-candidate dependence. Independent
+candidate prediction intervals do not.</p>
+<p>If an uncertainty procedure subsequently adds independent residual
+noise merely to simulate future phenotype observations, that residual
+component should not automatically enter <code>coef_vcov</code>.</p>
+<p><strong>Integration status — Model-dependent. Point-prediction
+capability alone is insufficient. Joint latent-merit uncertainty must be
+justified and validated.</strong></p>
+</div>
+<div id="outputs-that-are-not-enough" class="section level2">
+<h2>23. Outputs that are not enough</h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Available output</th>
+<th>Limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Candidate rank</td>
+<td>No uncertainty information</td>
+</tr>
+<tr class="even">
+<td>GEBV only</td>
+<td>Point prediction only</td>
+</tr>
+<tr class="odd">
+<td>Candidate accuracy</td>
+<td>Marginal summary</td>
+</tr>
+<tr class="even">
+<td>Candidate reliability</td>
+<td>Marginal summary</td>
+</tr>
+<tr class="odd">
+<td>Standard error per candidate</td>
+<td>Covariance diagonal only</td>
+</tr>
+<tr class="even">
+<td>Marginal PEV</td>
+<td>Covariance diagonal only</td>
+</tr>
+<tr class="odd">
+<td>Independent prediction intervals</td>
+<td>Do not preserve cross-candidate dependence</td>
+</tr>
+<tr class="even">
+<td>Marker-effect standard errors</td>
+<td>Do not automatically provide candidate target covariance</td>
+</tr>
+<tr class="odd">
+<td>Environment-specific point predictions</td>
+<td>Require their complete joint uncertainty</td>
+</tr>
+<tr class="even">
+<td>Future phenotype predictive variance</td>
+<td>May include residual noise outside the candidate-merit target</td>
+</tr>
+</tbody>
+</table>
+<p>The central missing quantity is usually the dependence structure
+among prediction errors or posterior uncertainty across candidates and
+coefficients.</p>
+</div>
+<div id="compatibility-decision-tree" class="section level2">
+<h2>24. Compatibility decision tree</h2>
+<pre class="text"><code>Can the upstream model generate candidate merit predictions?
+            |
+           yes
+            |
+            v
+Can those predictions be represented in a common finite basis?
+            |
+           yes
+            |
+            v
+Can the TPE be represented using that same frozen basis?
+            |
+           yes
+            |
+            v
+Can you obtain the FULL joint uncertainty of all
+candidate coefficient targets?
+            |
+           yes
+            |
+            v
+Does that covariance describe uncertainty in candidate
+coefficients or latent merit rather than merely future
+residual phenotype noise?
+            |
+           yes
+            |
+            v
+Are target definition, dimensions, labels, and
+candidate-major ordering correct?
+            |
+           yes
+            |
+            v
+Do symmetry and PSD checks pass?
+            |
+           yes
+            |
+            v
+       br_check_inputs()
+            |
+            v
+       br_prediction()</code></pre>
+<p>The name of the upstream software is deliberately absent from this
+decision tree.</p>
+</div>
+<div id="current-integration-status-matrix" class="section level2">
+<h2>25. Current integration-status matrix</h2>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Upstream route</th>
+<th>Current status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Transparent genomic reaction norm</td>
+<td><strong>Reference</strong></td>
+</tr>
+<tr class="even">
+<td>Beginner fixed-effect reaction norm</td>
+<td><strong>Pedagogical reference</strong></td>
+</tr>
+<tr class="odd">
+<td>Genomic/random regression</td>
+<td><strong>Strong conceptual compatibility</strong></td>
+</tr>
+<tr class="even">
+<td><code>sommer</code></td>
+<td><strong>High feasibility — native validation pending</strong></td>
+</tr>
+<tr class="odd">
+<td>Plain GBLUP with <span class="math inline">\(p=1\)</span></td>
+<td><strong>Compatible but TPE-degenerate</strong></td>
+</tr>
+<tr class="even">
+<td>Discrete environment-specific GBLUP</td>
+<td><strong>Compatible if full joint state-specific uncertainty is
+available</strong></td>
+</tr>
+<tr class="odd">
+<td>Standard marginal <code>rrBLUP</code> output</td>
+<td><strong>Not sufficient as supplied</strong></td>
+</tr>
+<tr class="even">
+<td>RR-BLUP with validated full target covariance derivation</td>
+<td><strong>Conceptually compatible</strong></td>
+</tr>
+<tr class="odd">
+<td>BGLR / Bayesian genomic model</td>
+<td><strong>Compatible through posterior target moments with Gaussian
+approximation</strong></td>
+</tr>
+<tr class="even">
+<td>Bayesian reaction norm</td>
+<td><strong>Strong conceptual compatibility with Gaussian
+approximation</strong></td>
+</tr>
+<tr class="odd">
+<td>Factor analytic for fitted states</td>
+<td><strong>Conditional compatibility</strong></td>
+</tr>
+<tr class="even">
+<td>FA prediction for genuinely new environments</td>
+<td><strong>Research-level compatibility</strong></td>
+</tr>
+<tr class="odd">
+<td>ASReml-R</td>
+<td><strong>High feasibility — target extraction requires
+validation</strong></td>
+</tr>
+<tr class="even">
+<td>PCA reaction norm</td>
+<td><strong>Strong compatibility</strong></td>
+</tr>
+<tr class="odd">
+<td>Polynomial or spline random regression</td>
+<td><strong>Strong compatibility</strong></td>
+</tr>
+<tr class="even">
+<td>Direct candidate-by-discrete-state predictions</td>
+<td><strong>Compatible through identity basis</strong></td>
+</tr>
+<tr class="odd">
+<td>Unrelated multiple biological traits</td>
+<td><strong>Not directly a TPE representation</strong></td>
+</tr>
+<tr class="even">
+<td>ML point prediction only</td>
+<td><strong>Insufficient</strong></td>
+</tr>
+<tr class="odd">
+<td>ML with defensible joint latent-merit draws</td>
+<td><strong>Potentially compatible after validation</strong></td>
+</tr>
+</tbody>
+</table>
+<p>These labels describe the current BreedReliabR documentation and
+validation state. They are not rankings of the statistical methods
+themselves.</p>
+</div>
+<div id="rule-for-software-specific-adapters" class="section level2">
+<h2>26. Rule for software-specific adapters</h2>
+<p>BreedReliabR should not add a function such as</p>
+<pre class="text"><code>br_from_&lt;software&gt;()</code></pre>
+<p>merely because the software can fit an appropriate model.</p>
+<p>An official adapter should be introduced only after four conditions
+are established: the requested software prediction target corresponds
+exactly to the BreedReliabR candidate coefficient, the complete joint
+uncertainty covariance is extracted or derived correctly,
+candidate-major ordering is preserved explicitly, and the result passes
+an independent numerical equivalence test.</p>
+<p>One verified adapter is preferable to several convenient but
+scientifically uncertain adapters.</p>
+</div>
+<div id="rule-for-gaussian-approximations" class="section level2">
+<h2>27. Rule for Gaussian approximations</h2>
+<p>BreedReliabR currently propagates candidate coefficient uncertainty
+using a joint Gaussian working distribution.</p>
+<p>For conventional mixed-model BLUE or BLUP workflows, this can be a
+natural representation. For Bayesian, bootstrap, ensemble, or
+simulation-based upstream analyses, replacing the original joint
+distribution by its mean and covariance creates a Gaussian moment
+approximation.</p>
+<p>That approximation should be disclosed whenever it is scientifically
+material. Direct propagation of arbitrary joint coefficient draws is
+outside the scope of the present release.</p>
+</div>
+<div id="rule-for-environmental-basis-compatibility" class="section level2">
+<h2>28. Rule for environmental-basis compatibility</h2>
+<p>The raw variables appearing in a field dataset do not need to be
+identical to the final BreedReliabR basis. The final candidate
+coefficients and TPE must, however, use the same coordinate system.</p>
+<p>Possible examples include</p>
+<pre class="text"><code>intercept + heat_z + water_z
+intercept + PC1 + PC2
+intercept + T + T_squared
+frozen spline basis
+discrete environment-state indicators</code></pre>
+<p>Any preprocessing or transformation that defines that coordinate
+system should be fitted upstream and then frozen. Target states should
+be projected through the same transformation.</p>
+</div>
+<div id="what-breedreliabr-is-responsible-for" class="section level2">
+<h2>29. What BreedReliabR is responsible for</h2>
+<p>Once compatible candidate predictions and a TPE have been supplied,
+BreedReliabR propagates uncertainty through the fixed-<span class="math inline">\(k\)</span> advancement problem.</p>
+<pre class="text"><code>M0   point ranking
+M1   prediction uncertainty
+M2   finite-TPE uncertainty
+M3   joint prediction and finite-TPE uncertainty</code></pre>
+<p>The package can then report candidate advancement probabilities,
+expected retained fraction, Omega, and geometric TPE support
+diagnostics. These quantities are conditional on the supplied upstream
+model and TPE assumptions.</p>
+</div>
+<div id="what-remains-the-responsibility-of-the-upstream-analysis" class="section level2">
+<h2>30. What remains the responsibility of the upstream analysis</h2>
+<p>The upstream modelling workflow remains responsible for phenotype
+quality, marker or pedigree processing, environmental-variable
+processing, model specification, variance-component estimation,
+prediction calibration, candidate target definition, joint uncertainty
+estimation, environmental-basis construction, and extrapolation
+assumptions.</p>
+<p>BreedReliabR propagates the supplied uncertainty. Correct propagation
+does not prove that the supplied uncertainty model is calibrated or
+biologically adequate.</p>
+</div>
+<div id="recommended-documentation-pathway" class="section level2">
+<h2>31. Recommended documentation pathway</h2>
+<pre class="text"><code>Vignette 1
+From breeding data to BreedReliabR
+        |
+        v
+Understand the interface
+        |
+        v
+Vignette 2
+Genomic GxE prediction to BreedReliabR
+        |
+        v
+See one complete genomic workflow
+        |
+        v
+Vignette 3
+Using BreedReliabR with different prediction models
+        |
+        v
+Translate another upstream model
+into the same common interface</code></pre>
+<p>Users do not need to master every model family. Different upstream
+models eventually converge on the same BreedReliabR hand-off.</p>
+</div>
+<div id="the-rule-to-remember" class="section level2">
+<h2>32. The rule to remember</h2>
+<p>Every proposed upstream integration should answer five questions.</p>
+<pre class="text"><code>1. What exactly are my candidate coefficients?
+
+2. What is the full joint uncertainty covariance
+   of those coefficient targets?
+
+3. What environmental basis do those coefficients use?
+
+4. Can my TPE be represented in exactly
+   the same frozen basis?
+
+5. Does the supplied covariance describe uncertainty
+   in candidate merit rather than merely residual
+   variation in future phenotype observations?</code></pre>
+<p>If those questions have defensible answers, the upstream model may be
+suitable for BreedReliabR.</p>
+<p>If the full joint coefficient uncertainty cannot be obtained,
+marginal standard errors or diagonal approximations should not be
+substituted merely to make the analysis run.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
